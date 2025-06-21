@@ -1,3 +1,15 @@
+## What is Debatrix
+
+Debatrix is an AI-powered debate platform that allows users to submit arguments on a specific topic and receive real-time feedback from an AI debate coach. The tool is designed to help users:
+
+Practice persuasive writing and critical thinking
+
+Improve argument structure through AI-generated responses
+
+Track and review past debates by topic
+
+By simulating a two-sided discussion, Debatrix encourages deeper engagement with complex issues while providing constructive, personalized AI insights.
+
 ## Getting Started
 
 To  run the development server:
@@ -9,15 +21,7 @@ npm run dev
 and should start listening on port 3000 by default. You can access the application in your web browser at:
 
 
-Debatrix is an AI-powered debate platform that allows users to submit arguments on a specific topic and receive real-time feedback from an AI debate coach. The tool is designed to help users:
 
-Practice persuasive writing and critical thinking
-
-Improve argument structure through AI-generated responses
-
-Track and review past debates by topic
-
-By simulating a two-sided discussion, Debatrix encourages deeper engagement with complex issues while providing constructive, personalized AI insights.
 
 [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
