@@ -7,6 +7,7 @@ import json
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import requests
+from urllib.parse import unquote
 
 load_dotenv()
 uri = os.getenv("URI")
@@ -75,17 +76,31 @@ def create_debate(request):
 
 
 
+from urllib.parse import unquote
+from django.http import JsonResponse
+
 def get_debate_history(request):
     if request.method == "GET":
         try:
-            records = collection.find().sort("topic", -1)
-            history = []
-            for record in records:
-                history.append({
+            topic = request.GET.get("topic")
+
+            if not topic:
+                return JsonResponse({"error": "Missing 'topic' parameter."}, status=400)
+
+            topic = unquote(topic).strip()
+            query = {"topic": {"$regex": f"^{topic}$", "$options": "i"}}
+
+
+            records = collection.find(query).sort("topic", -1)
+
+            history = [
+                {
                     "topic": record.get("topic"),
                     "argument": record.get("argument"),
                     "ai_response": record.get("ai_response"),
-                })
+                }
+                for record in records
+            ]
             return JsonResponse({"history": history})
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)

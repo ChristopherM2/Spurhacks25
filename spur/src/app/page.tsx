@@ -1,23 +1,23 @@
 "use client";
 
 import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown';
 
 const DebatePage = () => {
     const [topic, setTopic] = useState('');
     const [userArgument, setUserArgument] = useState('');
     const [aiResponse, setAiResponse] = useState('');
+    const [error, setError] = useState('');
     type HistoryEntry = { argument: string; ai_response: string };
     const [history, setHistory] = useState<HistoryEntry[]>([]);
-
-
     const [loading, setLoading] = useState(false);
     const [darkMode, setDarkMode] = useState(true);
 
     const handleDebate = async () => {
-        if (!topic || !userArgument) return;
+        if (!topic.trim() || !userArgument.trim()) return;
 
         setLoading(true);
+        setError('');
         try {
             const response = await fetch('http://localhost:8000/debate/submit/', {
                 method: 'POST',
@@ -36,22 +36,36 @@ const DebatePage = () => {
             setUserArgument('');
         } catch (error) {
             console.error('Error fetching AI response:', error);
+            setError('Failed to submit argument. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
     const fetchHistory = async () => {
+        setError('');
+        if (!topic.trim()) {
+            setError('Please enter a topic before loading history.');
+            return;
+        }
+
         try {
-            const response = await fetch('http://localhost:8000/debate/history/');
+            const response = await fetch(`http://localhost:8000/debate/history/?topic=${encodeURIComponent(topic)}`);
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to fetch history.');
+            }
+
             const data = await response.json();
             const formatted = data.history.map((item: any) => ({
                 argument: item.argument,
                 ai_response: item.ai_response,
             }));
             setHistory(formatted);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to fetch history:', error);
+            setError(error.message || 'Unexpected error occurred.');
         }
     };
 
@@ -64,7 +78,10 @@ const DebatePage = () => {
                             🧠 Debatrix: Debate an AI
                         </h1>
                         <button
-                            onClick={() => setDarkMode(!darkMode)}
+                            onClick={() => {
+                                setDarkMode(!darkMode);
+                                document.documentElement.classList.toggle('dark', !darkMode);
+                            }}
                             className="text-sm px-3 py-1 border rounded-md border-gray-400 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700"
                         >
                             Toggle {darkMode ? 'Light' : 'Dark'}
@@ -114,6 +131,12 @@ const DebatePage = () => {
                                 Load History
                             </button>
                         </div>
+
+                        {error && (
+                            <div className="text-red-500 bg-red-100 dark:bg-red-900 dark:text-red-300 border border-red-400 p-3 rounded-md">
+                                {error}
+                            </div>
+                        )}
                     </div>
 
                     <hr className="border-t border-gray-300 dark:border-gray-600" />
@@ -130,7 +153,6 @@ const DebatePage = () => {
                                             <ReactMarkdown>{entry.ai_response}</ReactMarkdown>
                                         </div>
                                     </div>
-
                                 </div>
                             ))}
                         </div>
