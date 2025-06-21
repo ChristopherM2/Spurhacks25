@@ -12,6 +12,11 @@ By simulating a two-sided discussion, Debatrix encourages deeper engagement with
 
 ## Getting Started
 
+#Simple
+Make sure node.js and python is installed then run run.bat
+
+#Complicated
+
 To  run the development server:
 
 ```bash
