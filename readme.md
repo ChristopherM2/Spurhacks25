@@ -11,6 +11,9 @@ Track and review past debates by topic
 By simulating a two-sided discussion, Debatrix encourages deeper engagement with complex issues while providing constructive, personalized AI insights.
 
 ## Getting Started
+Create a .env file in the backend\debate folder with the following keys
+GROQ_API_KEY= 'API KEY'
+URI='mongodb connection string'
 
 ## Simple
 Make sure node.js and python is installed then run run.bat
